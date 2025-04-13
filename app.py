@@ -17,7 +17,7 @@ app.secret_key = 'your_secret_key_here'  # Still needed for session/flash messag
 popular_articles = {}
 
 def get_news_sentiment(topic):
-    api_key = os.getenv("NEWS_API_KEY")
+    api_key = "12333d06727540dabf43927b4b1af705"
     url = f"https://newsapi.org/v2/everything?q={topic}&language=en&apiKey={api_key}"
     response = requests.get(url)
     data = response.json()
