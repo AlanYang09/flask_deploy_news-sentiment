@@ -5,7 +5,96 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>News Sentiment Analysis</title>
     <style>
-        /* (same CSS as before) */
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f4f4f9;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        header {
+            width: 100%;
+            padding: 20px;
+            background-color: #333;
+            color: white;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        header h1 {
+            margin: 0;
+        }
+
+        nav {
+            display: flex;
+            gap: 15px;
+        }
+
+        nav a {
+            color: white;
+            text-decoration: none;
+            padding: 10px 15px;
+            background-color: #555;
+            border-radius: 5px;
+        }
+
+        main {
+            width: 80%;
+            margin: 20px;
+            padding: 20px;
+            background-color: white;
+            border-radius: 10px;
+            box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
+        }
+
+        h2 {
+            color: #333;
+        }
+
+        .articles {
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+        }
+
+        .article {
+            background-color: #f9f9f9;
+            padding: 15px;
+            border-radius: 10px;
+            box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
+        }
+
+        .article a {
+            text-decoration: none;
+            color: #333;
+            font-weight: bold;
+        }
+
+        .votes {
+            margin-top: 10px;
+            font-size: 14px;
+            color: #666;
+        }
+
+        .vote-buttons button {
+            margin-right: 10px;
+        }
+
+        .sentiment {
+            color: #007BFF;
+        }
+
+        footer {
+            margin-top: 50px;
+            text-align: center;
+            padding: 20px;
+            background-color: #333;
+            color: white;
+        }
     </style>
 </head>
 <body>
@@ -21,14 +110,9 @@
 </header>
 
 <main>
-    <div class="graph">
-        <h2>Sentiment Breakdown</h2>
-        <img src="sentiment_graph.png" alt="Sentiment Graph">
-    </div>
-
     <div class="articles" id="articles-container">
         <h2>Articles</h2>
-        <!-- Articles will be injected here by JS -->
+        <!-- Articles will be injected here -->
     </div>
 </main>
 
@@ -37,47 +121,55 @@
 </footer>
 
 <script>
-    // Example static articles data (replace with actual data or fetch from an API)
     const articles = [
         {
-            title: "Bitcoin reaches new highs",
+            title: "Bitcoin hits new all-time high",
             url: "https://example.com/bitcoin-news",
             published_at: "2025-04-10",
             sentiment: "Bullish",
-            votes: { bullish: 12, bearish: 2, neutral: 3 }
+            votes: { bullish: 5, bearish: 1, neutral: 2 }
         },
         {
-            title: "Crypto regulation in the US",
-            url: "https://example.com/crypto-regulation",
+            title: "Crypto market sees increased regulation",
+            url: "https://example.com/crypto-update",
             published_at: "2025-04-09",
             sentiment: "Neutral",
-            votes: { bullish: 4, bearish: 5, neutral: 8 }
+            votes: { bullish: 3, bearish: 2, neutral: 6 }
         }
     ];
 
     const container = document.getElementById('articles-container');
 
     articles.forEach((article, idx) => {
-        const div = document.createElement('div');
-        div.className = 'article';
-        div.innerHTML = `
+        const articleDiv = document.createElement('div');
+        articleDiv.className = 'article';
+
+        articleDiv.innerHTML = `
             <a href="${article.url}" target="_blank">${article.title}</a>
             <p><strong>Published at:</strong> ${article.published_at}</p>
             <p><strong>Sentiment:</strong> <span class="sentiment">${article.sentiment}</span></p>
             <div class="votes">
-                <strong>Votes:</strong> 
-                Bullish: ${article.votes.bullish} |
-                Bearish: ${article.votes.bearish} |
-                Neutral: ${article.votes.neutral}
+                <strong>Votes:</strong>
+                Bullish: <span id="bullish-${idx}">${article.votes.bullish}</span> |
+                Bearish: <span id="bearish-${idx}">${article.votes.bearish}</span> |
+                Neutral: <span id="neutral-${idx}">${article.votes.neutral}</span>
             </div>
             <div class="vote-buttons">
-                <button onclick="alert('You voted Bullish for article ${idx + 1}')">Bullish</button>
-                <button onclick="alert('You voted Bearish for article ${idx + 1}')">Bearish</button>
-                <button onclick="alert('You voted Neutral for article ${idx + 1}')">Neutral</button>
+                <button onclick="vote(${idx}, 'bullish')">Bullish</button>
+                <button onclick="vote(${idx}, 'bearish')">Bearish</button>
+                <button onclick="vote(${idx}, 'neutral')">Neutral</button>
             </div>
         `;
-        container.appendChild(div);
+
+        container.appendChild(articleDiv);
     });
+
+    function vote(index, type) {
+        const span = document.getElementById(`${type}-${index}`);
+        let count = parseInt(span.textContent);
+        span.textContent = count + 1;
+        alert(`You voted ${type.charAt(0).toUpperCase() + type.slice(1)} for article ${index + 1}`);
+    }
 </script>
 
 </body>
