@@ -1,0 +1,159 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>News Sentiment Analysis</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f4f4f9;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        header {
+            width: 100%;
+            padding: 20px;
+            background-color: #333;
+            color: white;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        header h1 {
+            margin: 0;
+        }
+
+        nav {
+            display: flex;
+            gap: 15px;
+        }
+
+        nav a {
+            color: white;
+            text-decoration: none;
+            padding: 10px 15px;
+            background-color: #555;
+            border-radius: 5px;
+        }
+
+        main {
+            width: 80%;
+            margin: 20px;
+            padding: 20px;
+            background-color: white;
+            border-radius: 10px;
+            box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
+        }
+
+        h2 {
+            color: #333;
+        }
+
+        .articles {
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+        }
+
+        .article {
+            background-color: #f9f9f9;
+            padding: 15px;
+            border-radius: 10px;
+            box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
+        }
+
+        .article a {
+            text-decoration: none;
+            color: #333;
+            font-weight: bold;
+        }
+
+        .votes {
+            margin-top: 10px;
+            font-size: 14px;
+            color: #666;
+        }
+
+        .vote-buttons form {
+            display: inline-block;
+            margin-right: 10px;
+        }
+
+        .sentiment {
+            color: #007BFF;
+        }
+
+        .graph {
+            margin-top: 30px;
+        }
+
+        footer {
+            margin-top: 50px;
+            text-align: center;
+            padding: 20px;
+            background-color: #333;
+            color: white;
+        }
+    </style>
+</head>
+<body>
+
+<header>
+    <h1>News Sentiment Analysis</h1>
+    <nav>
+        <a href="{{ url_for('index') }}">Bitcoin</a>
+        <a href="{{ url_for('crypto') }}">Crypto</a>
+        <a href="{{ url_for('stocks') }}">Stocks</a>
+        <a href="{{ url_for('technology') }}">Technology</a>
+    </nav>
+</header>
+
+<main>
+    <div class="graph">
+        <h2>Sentiment Breakdown</h2>
+        <img src="data:image/png;base64,{{ graph }}" alt="Sentiment Graph">
+    </div>
+
+    <div class="articles">
+        <h2>Articles</h2>
+        {% for idx, article in headlines %}
+        <div class="article">
+            <a href="{{ article['url'] }}" target="_blank">{{ article['title'] }}</a>
+            <p><strong>Published at:</strong> {{ article['published_at'] }}</p>
+            <p><strong>Sentiment:</strong> <span class="sentiment">{{ article['sentiment'] }}</span></p>
+            
+            <div class="votes">
+                <strong>Votes:</strong> 
+                Bullish: {{ popular_articles.get(idx, {}).get('bullish', 0) }} |
+                Bearish: {{ popular_articles.get(idx, {}).get('bearish', 0) }} |
+                Neutral: {{ popular_articles.get(idx, {}).get('neutral', 0) }}
+            </div>
+
+            <div class="vote-buttons">
+                <form action="{{ url_for('vote', article_id=idx, sentiment='bullish') }}" method="POST">
+                    <button type="submit">Bullish</button>
+                </form>
+                <form action="{{ url_for('vote', article_id=idx, sentiment='bearish') }}" method="POST">
+                    <button type="submit">Bearish</button>
+                </form>
+                <form action="{{ url_for('vote', article_id=idx, sentiment='neutral') }}" method="POST">
+                    <button type="submit">Neutral</button>
+                </form>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+</main>
+
+<footer>
+    <p>Powered by News API</p>
+</footer>
+
+</body>
+</html>
