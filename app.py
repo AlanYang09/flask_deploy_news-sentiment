@@ -22,8 +22,12 @@ def get_news_sentiment(topic):
     response = requests.get(url)
     data = response.json()
 
-    headlines = []
+    # Check if 'articles' exists in the response
+    if 'articles' not in data:
+        print(f"Error: 'articles' key not found in the API response. Response: {data}")
+        return []
 
+    headlines = []
     for article in data['articles']:
         title = article['title']
         published_at = article['publishedAt']
